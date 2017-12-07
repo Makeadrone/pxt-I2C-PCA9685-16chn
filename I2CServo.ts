@@ -142,11 +142,11 @@ namespace kitronik {
    //         HighByte = true
    //     }
         buf[0] = Servo
-        buf[1] = PWMVal >> 0xFF
+        buf[1] = PWMVal & 0xFF
         pins.i2cWriteBuffer(ChipAddress, buf, false)
      //   if (HighByte) {
             buf[0] = Servo + 1
-            buf[1] = PWMVal & 0xFF
+            buf[1] = PWMVal >> 8
      //   }
      //   else {
      //       buf[0] = Servo + 1
