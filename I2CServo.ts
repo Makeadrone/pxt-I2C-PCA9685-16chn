@@ -128,13 +128,13 @@ namespace kitronik {
     //% block="set%Servo|to%degrees"
 	//% degrees.min=0 degrees.max=180
 	
-    export function servoWrite(Servo: Servos, degrees: number): void {
+    export function servoWrite(Servo: Servos, PWMVal: number): void {
         if (initalised == false) {
             secretIncantation()
         }
         let buf = pins.createBuffer(2)
-        let HighByte = false
-        let deg100 = degrees * 100
+    //    let HighByte = false
+    //    let deg100 = degrees * 100
     //    let PWMVal100 = deg100 * ServoMultiplier
     //    let PWMVal = PWMVal100 / 10000
     //    PWMVal = PWMVal + ServoZeroOffset
