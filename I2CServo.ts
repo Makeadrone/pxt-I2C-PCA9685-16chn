@@ -90,9 +90,9 @@ namespace kitronik {
 
         //Should probably do a soft reset of the I2C chip here when I figure out how
 
-        // First set the prescaler to 50 hz
+        // First set the prescaler to the fastest refresh rate possible 
         buf[0] = PrescaleReg
-        buf[1] = 0x85
+        buf[1] = 0x01
         pins.i2cWriteBuffer(ChipAddress, buf, false)
         //Block write via the all leds register to set all of them to 90 degrees
         buf[0] = 0xFA
