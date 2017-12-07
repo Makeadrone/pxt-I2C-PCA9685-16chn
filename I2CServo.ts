@@ -44,7 +44,7 @@ namespace kitronik {
 		Board1 = 0x6A,
 		
 	}
-    //Trim the servo pulses. These are here for advanced users, and not exposed to blocks.
+/*    //Trim the servo pulses. These are here for advanced users, and not exposed to blocks.
     //It appears that servos I've tested are actually expecting 0.5 - 2.5mS pulses, 
     //not the widely reported 1-2mS 
     //that equates to multiplier of 226, and offset of 0x66
@@ -62,7 +62,7 @@ namespace kitronik {
             else {
                 ServoMultiplier = Value
             }
-
+ 
         }
     }
     function TrimServoZeroOffset(Value: number) {
@@ -79,9 +79,9 @@ namespace kitronik {
 
         }
     }
-
+*/
 	/*
-		This secret incantation sets up the PCA9865 I2C driver chip to be running at 50Hx pulse repetition, and then sets the 16 output registers to 1.5mS - centre travel.
+		This secret incantation sets up the PCA9865 I2C driver chip to be running at 1,6 kHz pulse repetition, and then sets the 16 output registers to 1.5mS - centre travel.
 		It should not need to be called directly be a user - the first servo write will call it.
 	
 	*/
@@ -90,7 +90,7 @@ namespace kitronik {
 
         //Should probably do a soft reset of the I2C chip here when I figure out how
 
-        // First set the prescaler to the fastest refresh rate possible 
+        // First set the prescaler to the fastest refresh rate possible (1,66 kHz)
         buf[0] = PrescaleReg
         buf[1] = 0x00
         pins.i2cWriteBuffer(ChipAddress, buf, false)
@@ -135,23 +135,23 @@ namespace kitronik {
         let buf = pins.createBuffer(2)
         let HighByte = false
         let deg100 = degrees * 100
-        let PWMVal100 = deg100 * ServoMultiplier
-        let PWMVal = PWMVal100 / 10000
-        PWMVal = PWMVal + ServoZeroOffset
-        if (PWMVal > 0xFF) {
-            HighByte = true
-        }
+    //    let PWMVal100 = deg100 * ServoMultiplier
+    //    let PWMVal = PWMVal100 / 10000
+    //    PWMVal = PWMVal + ServoZeroOffset
+   //     if (PWMVal > 0xFF) {
+   //         HighByte = true
+   //     }
         buf[0] = Servo
-        buf[1] = PWMVal
+        buf[1] = PWMVal & 0xFF
         pins.i2cWriteBuffer(ChipAddress, buf, false)
-        if (HighByte) {
+     //   if (HighByte) {
             buf[0] = Servo + 1
-            buf[1] = 0x01
-        }
-        else {
-            buf[0] = Servo + 1
-            buf[1] = 0x00
-        }
+            buf[1] = PWMVal >> FF
+     //   }
+     //   else {
+     //       buf[0] = Servo + 1
+     //       buf[1] = 0x00
+     //   }
         pins.i2cWriteBuffer(ChipAddress, buf, false)
     }
 	    
